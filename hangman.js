@@ -4,14 +4,23 @@ var words = ["brick", "plant", "sword", "charm", "flint", "grove", "haste", "jum
              "whisk", "xenon", "yacht", "zesty", "amber", "blaze", "crisp", "dwarf", "ember", "frost",
              "glide", "hover", "ivory", "jolly", "koala", "lunar", "mango", "nylon", "optic", "pearl",
              "quirk", "roast", "swoop", "tidal", "umbra", "vowel", "wrist", "xylol", "yeast", "zebra"];
-var selectedWord = "";
 var guessedWord = ["_", "_", "_", "_", "_"];
 var health = 5;
 var score = 0;
 
+// Function to generate and store the word securely
+function getSecretWord() {
+    var index = Math.floor(Math.random() * words.length);
+    var encodedWord = btoa(words[index]); // Encode word in Base64
+    return function() {
+        return atob(encodedWord); // Decode when needed
+    };
+}
+
+var fetchWord = getSecretWord(); // Create closure to store word securely
+
 // Function to initialize the game
 function setupGame() {
-    selectedWord = words[Math.floor(Math.random() * words.length)];
     guessedWord = ["_", "_", "_", "_", "_"];
     health = 5;
     score = 0;
@@ -47,7 +56,7 @@ function updateHangman() {
     if (health === 0) {
         document.getElementById("foot-1").style.display = "block";
         document.getElementById("foot-2").style.display = "block";
-        alert("Game Over! The word was: " + selectedWord);
+        alert("Game Over! The word was: " + fetchWord());
         health = -1;
     }
 }
@@ -63,9 +72,11 @@ function checkLetter() {
         return;
     }
 
-    if (selectedWord.includes(letter)) {
+    var secretWord = fetchWord(); // Fetch the word when needed
+
+    if (secretWord.includes(letter)) {
         for (var i = 0; i < 5; i++) {
-            if (selectedWord[i] === letter && guessedWord[i] === "_") {
+            if (secretWord[i] === letter && guessedWord[i] === "_") {
                 guessedWord[i] = letter;
                 score++;
             }
