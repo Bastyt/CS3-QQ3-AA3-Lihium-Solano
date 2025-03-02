@@ -25,15 +25,7 @@ function setupGame() {
 
     getSecretWord(); // Choose a word
     document.getElementById("lives").innerText = health;
-    updateWordDisplay();
     resetHangman();
-}
-
-// Function to update displayed word
-function updateWordDisplay() {
-    for (var i = 0; i < 5; i++) {
-        document.getElementById(`s-${i}`).innerText = guessedWord[i];
-    }
 }
 
 // Function to reset hangman drawing
@@ -107,7 +99,6 @@ function checkLetter() {
     }
 
     document.getElementById("lives").innerText = health;
-    updateWordDisplay();
 
     // Check win/loss conditions
     if (score === 5) {
