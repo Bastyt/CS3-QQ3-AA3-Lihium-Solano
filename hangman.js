@@ -1,11 +1,7 @@
 // HANGMAN GAME
 
 // Global variables
-var words = ["brick", "plant", "sword", "charm", "flint", "grove", "haste", "jumpy", "kneel", "latch",
-             "mirth", "noble", "ocean", "prism", "quilt", "raven", "stork", "truce", "upend", "vexed",
-             "whisk", "xenon", "yacht", "zesty", "amber", "blaze", "crisp", "dwarf", "ember", "frost",
-             "glide", "hover", "ivory", "jolly", "koala", "lunar", "mango", "nylon", "optic", "pearl",
-             "quirk", "roast", "swoop", "tidal", "umbra", "vowel", "wrist", "xylol", "yeast", "zebra"];
+var words = ["vixen", "bacon", "plane", "water", "stone", "candy", "tears", "flame", "paint", "white", "brown", "clamp", "brush", "liver", "mouse", "table", "wound", "night", "flute", "piano", "lemon", "smirk", "pearl", "index", "leap", "light", "quilt", "sharp", "march", "jumpy", "quick", "viper", "heart", "break", "stare", "spike", "block", "spark", "chair", "rhyme", "tiger", "plant", "truck", "trace", "flush", "singh", "grape", "track"];
 
 var guessedWord = ["_", "_", "_", "_", "_"]; // Displayed word
 var health = 5; // Lives
