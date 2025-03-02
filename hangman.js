@@ -91,17 +91,17 @@ function checkLetter() {
     } else {
         guessedLetters.push(letter); // Add letter to guessed list
 
-        if (secretWord.includes(letter)) {
-            var found = false;
-            for (var i = 0; i < 5; i++) {
-                if (secretWord[i] === letter && guessedWord[i] === "_") {
-                    guessedWord[i] = letter;
-                    score++;
-                    found = true;
-                }
+        var found = false;
+        for (var i = 0; i < 5; i++) {
+            if (secretWord[i] === letter) {
+                guessedWord[i] = letter;
+                score++;
+                found = true;
             }
-        } else {
-            health--;
+        }
+
+        if (!found) {
+            health--; // Lose a life if letter is incorrect
             updateHangman();
         }
     }
@@ -109,10 +109,11 @@ function checkLetter() {
     document.getElementById("lives").innerText = health;
     updateWordDisplay();
 
+    // Check win/loss conditions
     if (score === 5) {
         alert("Congratulations! You won!");
         askReplay();
-    } else if (attempts >= 5) {
+    } else if (health <= 0) { // Fix: Ensure health can reach zero
         alert("Out of attempts! The word was: " + secretWord);
         askReplay();
     }
