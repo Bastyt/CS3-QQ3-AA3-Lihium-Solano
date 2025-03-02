@@ -7,7 +7,6 @@ var health = 5; // Lives
 var score = 0; // Correct letters guessed
 var secretWord = ""; // The chosen word
 var guessedLetters = []; // Stores letters already guessed
-var attempts = 0; // Track number of attempts
 
 // Function to select a random word
 function getSecretWord() {
@@ -20,7 +19,6 @@ function setupGame() {
     guessedWord = ["_", "_", "_", "_", "_"];
     health = 5;
     score = 0;
-    attempts = 0;
     guessedLetters = []; // Reset guessed letters
 
     getSecretWord(); // Choose a word
@@ -62,26 +60,15 @@ function updateHangman() {
 
 // Function to check letter input
 function checkLetter() {
-    if (health <= 0 || score === 5 || attempts >= 5) return;
+    if (health <= 0 || score === 5) return;
 
-    var letter = prompt("Enter a letter:");
-
-    // Handle all input cases based on the provided conditions
-    if (letter === null) {
-        alert("You cancelled. No penalty.");
+    var letter = prompt("Enter a letter:").toLowerCase();
+    
+    if (!letter || letter.length !== 1 || !/[a-z]/.test(letter)) {
+        alert("Invalid input! Please enter a single letter.");
+        health--;
         return;
     }
-    if (letter.length === 0) {
-        alert("Empty input. No penalty.");
-        return;
-    }
-    if (letter.length > 1) {
-        alert("Only one letter allowed. No penalty.");
-        return;
-    }
-
-    letter = letter.toLowerCase();
-    attempts++; // Increase the attempt count (valid input was given)
 
     // Check if letter was already guessed
     if (guessedLetters.includes(letter)) {
@@ -91,17 +78,17 @@ function checkLetter() {
     } else {
         guessedLetters.push(letter); // Add letter to guessed list
 
-        var found = false;
-        for (var i = 0; i < 5; i++) {
-            if (secretWord[i] === letter) {
-                guessedWord[i] = letter;
-                score++;
-                found = true;
+        if (secretWord.includes(letter)) {
+            var found = false;
+            for (var i = 0; i < 5; i++) {
+                if (secretWord[i] === letter && guessedWord[i] === "_") {
+                    guessedWord[i] = letter;
+                    score++;
+                    found = true;
+                }
             }
-        }
-
-        if (!found) {
-            health--; // Lose a life if letter is incorrect
+        } else {
+            health--;
             updateHangman();
         }
     }
@@ -109,12 +96,8 @@ function checkLetter() {
     document.getElementById("lives").innerText = health;
     updateWordDisplay();
 
-    // Check win/loss conditions
     if (score === 5) {
         alert("Congratulations! You won!");
-        askReplay();
-    } else if (health <= 0) { // Fix: Ensure health can reach zero
-        alert("Out of attempts! The word was: " + secretWord);
         askReplay();
     }
 }
