@@ -1,26 +1,13 @@
 // Global Variables
-var words = ["brick", "plant", "sword", "charm", "flint", "grove", "haste", "jumpy", "kneel", "latch",
-             "mirth", "noble", "ocean", "prism", "quilt", "raven", "stork", "truce", "upend", "vexed",
-             "whisk", "xenon", "yacht", "zesty", "amber", "blaze", "crisp", "dwarf", "ember", "frost",
-             "glide", "hover", "ivory", "jolly", "koala", "lunar", "mango", "nylon", "optic", "pearl",
-             "quirk", "roast", "swoop", "tidal", "umbra", "vowel", "wrist", "xylol", "yeast", "zebra"];
+var words = ["vixen", "bacon", "plane", "water", "stone", "candy", "tears", "flame", "paint", "white", "brown", "clamp", "brush", "liver", "mouse", "table", "wound", "night", "flute", "piano",  "lemon", "smirk", "pearl", "index", "leap", "light", "quilt", "sharp", "march", "jumpy", "quick", "viper", "heart", "break", "stare", "spike", "block", "spark", "chair", "rhyme", "tiger", "plant", "truck", "trace", "flush", "singh", "grape", "track"];
+var selectedWord = "";
 var guessedWord = ["_", "_", "_", "_", "_"];
 var health = 5;
 var score = 0;
 
-// Function to generate and store the word securely
-function getSecretWord() {
-    var index = Math.floor(Math.random() * words.length);
-    var encodedWord = btoa(words[index]); // Encode word in Base64
-    return function() {
-        return atob(encodedWord); // Decode when needed
-    };
-}
-
-var fetchWord = getSecretWord(); // Create closure to store word securely
-
 // Function to initialize the game
 function setupGame() {
+    selectedWord = words[Math.floor(Math.random() * words.length)];
     guessedWord = ["_", "_", "_", "_", "_"];
     health = 5;
     score = 0;
@@ -56,10 +43,42 @@ function updateHangman() {
     if (health === 0) {
         document.getElementById("foot-1").style.display = "block";
         document.getElementById("foot-2").style.display = "block";
-        alert("Game Over! The word was: " + fetchWord());
+        alert("Game Over! The word was: " + selectedWord);
         health = -1;
     }
 }
+
+// Function to check letter input
+function checkLetter() {
+    if (health <= 0 || score === 5) return;
+
+    var letter = prompt("Enter a letter:").toLowerCase();
+    
+    if (!letter || letter.length !== 1 || !/[a-z]/.test(letter)) {
+        alert("Invalid input! Please enter a single letter.");
+        return;
+    }
+
+    if (selectedWord.includes(letter)) {
+        for (var i = 0; i < 5; i++) {
+            if (selectedWord[i] === letter && guessedWord[i] === "_") {
+                guessedWord[i] = letter;
+                score++;
+            }
+        }
+    } else {
+        health--;
+        updateHangman();
+    }
+
+    document.getElementById("lives").innerText = health;
+    updateWordDisplay();
+
+    if (score === 5) {
+        alert("Congratulations! You won!");
+    }
+}
+
 
 // Function to check letter input
 function checkLetter() {
