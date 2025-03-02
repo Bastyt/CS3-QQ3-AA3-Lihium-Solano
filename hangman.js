@@ -2,11 +2,11 @@
 
 // Global variables
 var words = ["vixen", "bacon", "plane", "water", "stone", "candy", "tears", "flame", "paint", "white", "brown", "clamp", "brush", "liver", "mouse", "table", "wound", "night", "flute", "piano", "lemon", "smirk", "pearl", "index", "leap", "light", "quilt", "sharp", "march", "jumpy", "quick", "viper", "heart", "break", "stare", "spike", "block", "spark", "chair", "rhyme", "tiger", "plant", "truck", "trace", "flush", "singh", "grape", "track"];
-
 var guessedWord = ["_", "_", "_", "_", "_"]; // Displayed word
 var health = 5; // Lives
 var score = 0; // Correct letters guessed
 var secretWord = ""; // The chosen word
+var guessedLetters = []; // Stores letters already guessed
 
 // Function to select a random word
 function getSecretWord() {
@@ -19,6 +19,7 @@ function setupGame() {
     guessedWord = ["_", "_", "_", "_", "_"];
     health = 5;
     score = 0;
+    guessedLetters = []; // Reset guessed letters
 
     getSecretWord(); // Choose a word
     document.getElementById("lives").innerText = health;
@@ -68,16 +69,27 @@ function checkLetter() {
         return;
     }
 
-    if (secretWord.includes(letter)) {
-        for (var i = 0; i < 5; i++) {
-            if (secretWord[i] === letter && guessedWord[i] === "_") {
-                guessedWord[i] = letter;
-                score++;
-            }
-        }
-    } else {
+    // Check if letter was already guessed
+    if (guessedLetters.includes(letter)) {
+        alert("You already guessed that letter! You lose a life.");
         health--;
         updateHangman();
+    } else {
+        guessedLetters.push(letter); // Add letter to guessed list
+
+        if (secretWord.includes(letter)) {
+            var found = false;
+            for (var i = 0; i < 5; i++) {
+                if (secretWord[i] === letter && guessedWord[i] === "_") {
+                    guessedWord[i] = letter;
+                    score++;
+                    found = true;
+                }
+            }
+        } else {
+            health--;
+            updateHangman();
+        }
     }
 
     document.getElementById("lives").innerText = health;
@@ -99,3 +111,4 @@ function askReplay() {
 
 // Start game on page load
 window.onload = setupGame;
+
