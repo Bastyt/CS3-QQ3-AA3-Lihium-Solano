@@ -7,6 +7,7 @@ var health = 5; // Lives
 var score = 0; // Correct letters guessed
 var secretWord = ""; // The chosen word
 var guessedLetters = []; // Stores letters already guessed
+var attempts = 0; // Track number of attempts
 
 // Function to select a random word
 function getSecretWord() {
@@ -19,6 +20,7 @@ function setupGame() {
     guessedWord = ["_", "_", "_", "_", "_"];
     health = 5;
     score = 0;
+    attempts = 0;
     guessedLetters = []; // Reset guessed letters
 
     getSecretWord(); // Choose a word
@@ -60,14 +62,26 @@ function updateHangman() {
 
 // Function to check letter input
 function checkLetter() {
-    if (health <= 0 || score === 5) return;
+    if (health <= 0 || score === 5 || attempts >= 5) return;
 
-    var letter = prompt("Enter a letter:").toLowerCase();
-    
-    if (!letter || letter.length !== 1 || !/[a-z]/.test(letter)) {
-        alert("Invalid input! Please enter a single letter.");
+    var letter = prompt("Enter a letter:");
+
+    // Handle all input cases based on the provided conditions
+    if (letter === null) {
+        alert("You cancelled. No penalty.");
         return;
     }
+    if (letter.length === 0) {
+        alert("Empty input. No penalty.");
+        return;
+    }
+    if (letter.length > 1) {
+        alert("Only one letter allowed. No penalty.");
+        return;
+    }
+
+    letter = letter.toLowerCase();
+    attempts++; // Increase the attempt count (valid input was given)
 
     // Check if letter was already guessed
     if (guessedLetters.includes(letter)) {
@@ -98,6 +112,9 @@ function checkLetter() {
     if (score === 5) {
         alert("Congratulations! You won!");
         askReplay();
+    } else if (attempts >= 5) {
+        alert("Out of attempts! The word was: " + secretWord);
+        askReplay();
     }
 }
 
@@ -111,4 +128,3 @@ function askReplay() {
 
 // Start game on page load
 window.onload = setupGame;
-
